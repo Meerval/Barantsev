@@ -4,7 +4,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.lanwen.verbalregex.VerbalExpression;
-import ru.stqa.pft.mantis.models.MailMessage;
+import ru.stqa.pft.mantis.model.MailMessage;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -16,33 +16,32 @@ public class RegistrationTests extends TestBase {
 
     @BeforeMethod
     public void startMailServer() {
-        am.mail().start();
+        app.mail().start();
     }
 
     @Test
     public void testRegistration() throws IOException, MessagingException {
         long now = System.currentTimeMillis();
-        String user = "user" + now;
-        String password = "password" + now;
-        String email = String.format("user%s@localhost.localdomain", now);
-        am.registration().start(user, email);
-        List<MailMessage> mailMessages = am.mail().waitForMail(2, 50000);
+        String email = String.format("email%s@users7.com", now);
+        String user = String.format("user7%s", now);
+        String password = "password";
+        app.registration().start(user, email);
+        List<MailMessage> mailMessages = app.mail().waitForMail(2, 10000);
         String confirmationLink = findConfirmationLink(mailMessages, email);
-        am.registration().finish(confirmationLink, password);
-        assertTrue(am.newSession().login(user, password));
+        app.registration().finish(confirmationLink, password, user);
+        assertTrue(app.newSession().login(user, password));
     }
 
     private String findConfirmationLink(List<MailMessage> mailMessages, String email) {
-        MailMessage mailMessage = mailMessages.stream().
-                filter((m) -> m.to.equals(email)).findFirst().get();
-        VerbalExpression regex = VerbalExpression.regex().
-                find("http://").nonSpace().oneOrMore().build();
+        MailMessage mailMessage = mailMessages.stream()
+                .filter((m) -> m.to.equals(email))
+                .findFirst().get();
+        VerbalExpression regex = VerbalExpression.regex().find("http://").nonSpace().oneOrMore().build();
         return regex.getText(mailMessage.text);
     }
 
     @AfterMethod(alwaysRun = true)
     public void stopMailServer() {
-        am.mail().stop();
+        app.mail().stop();
     }
 }
-

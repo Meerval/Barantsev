@@ -9,9 +9,9 @@ import static org.testng.Assert.assertTrue;
 
 public class LoginTests extends TestBase {
 
-@Test
+    @Test
     public void testLogin() throws IOException {
-        HttpSession session = am.newSession();
+        HttpSession session = app.newSession();
         assertTrue(session.login("administrator", "root"));
         assertTrue(session.isLoggedInAs("administrator"));
     }

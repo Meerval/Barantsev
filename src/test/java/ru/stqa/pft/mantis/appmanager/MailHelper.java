@@ -2,8 +2,10 @@ package ru.stqa.pft.mantis.appmanager;
 
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
-import ru.stqa.pft.mantis.models.MailMessage;
+import ru.stqa.pft.mantis.model.MailMessage;
+//import org.apache.tools.mail.MailMessage;
 
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
@@ -14,40 +16,47 @@ public class MailHelper {
     private ApplicationManager app;
     private final Wiser wiser;
 
-
     public MailHelper(ApplicationManager app) {
         this.app = app;
         wiser = new Wiser();
     }
-
-    public List<MailMessage> waitForMail (int count, long timeout) throws MessagingException, IOException {
+    public List<MailMessage> waitForMail(int count, long timeout) throws IOException, MessagingException {
         long start = System.currentTimeMillis();
-        while (System.currentTimeMillis() < start + timeout){
-            if (wiser.getMessages().size() >= count){
-                return wiser.getMessages().stream().map(MailHelper::toModelMail).collect(Collectors.toList());
+        while (System.currentTimeMillis() < start + timeout) {
+            if (wiser.getMessages().size() >= count) {
+                return wiser.getMessages().stream().map((m) -> toModelMail(m)).collect(Collectors.toList());
             }
             try {
                 Thread.sleep(1000);
-            }catch (InterruptedException e){
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        throw new Error("No mail : (");
+        throw new Error("No mail :(");
     }
 
-    public static MailMessage toModelMail (WiserMessage m) {
+    public static MailMessage toModelMail(WiserMessage message) {
         try {
-            MimeMessage mm = m.getMimeMessage();
-            return new MailMessage(mm.getAllRecipients()[0].toString(), (String) mm.getContent());
-        } catch (MessagingException | IOException e) {
-            e.printStackTrace();
+            MimeMessage mimeMessage = message.getMimeMessage();
+            return new MailMessage(mimeMessage.getAllRecipients()[0].toString(),
+                    (String) mimeMessage.getContent());
+        }
+        catch (MessagingException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+        catch (IOException exception) {
+            exception.printStackTrace();
             return null;
         }
     }
-    public void start(){
+
+    public void start() {
         wiser.start();
     }
-    public void stop(){
+
+    public void stop() {
         wiser.stop();
     }
 }
