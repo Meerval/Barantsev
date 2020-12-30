@@ -67,5 +67,11 @@
     <orderEntry type="library" name="Maven: ru.lanwen.verbalregex:java-verbal-expressions:1.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: ch.qos.logback:logback-classic:1.2.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
+    <orderEntry type="library" name="Maven: biz.futureware.mantis:mantis-axis-soap-client:1.2.19" level="project" />
+    <orderEntry type="library" name="Maven: axis:axis:1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.axis:axis-jaxrpc:1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.axis:axis-saaj:1.4" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: axis:axis-wsdl4j:1.5.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: commons-discovery:commons-discovery:0.2" level="project" />
   </component>
 </module>
